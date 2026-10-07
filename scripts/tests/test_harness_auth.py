@@ -47,6 +47,9 @@ from cli.auth.oauth_flows import (
 )
 from harness import main
 
+_FAKE_ANTHROPIC_API_KEY = "sk-ant-EXAMPLE-1234567890abcdef-nopqr"
+_FAKE_ANTHROPIC_OAUTH_TOKEN = "sk-ant-oauth-EXAMPLE-1234567890abcdef-nopqr"
+
 
 class TestPKCE(unittest.TestCase):
     """Test RFC 7636 PKCE code_verifier and code_challenge generation."""
@@ -80,7 +83,7 @@ class TestCredentialSanitization(unittest.TestCase):
     """Test zero plaintext token leakage in logs and terminal representations."""
 
     def test_mask_token_long(self) -> None:
-        token = "[REDACTED_ANTHROPIC_KEY]"
+        token = _FAKE_ANTHROPIC_API_KEY
         masked = mask_token(token)
         self.assertTrue(masked.startswith("sk-ant"))
         self.assertTrue(masked.endswith("nopqr"[-4:]))
@@ -322,14 +325,14 @@ class TestOAuthFlows(unittest.TestCase):
         self.temp_dir.cleanup()
 
     def test_anthropic_api_key_onboarding(self) -> None:
-        res = AnthropicOAuthFlow.login(api_key="[REDACTED_ANTHROPIC_KEY]")
+        res = AnthropicOAuthFlow.login(api_key=_FAKE_ANTHROPIC_API_KEY)
         self.assertEqual(res["provider"], "anthropic")
         self.assertEqual(res["token_type"], "ApiKey")
-        self.assertEqual(res["access_token"], "[REDACTED_ANTHROPIC_KEY]")
+        self.assertEqual(res["access_token"], _FAKE_ANTHROPIC_API_KEY)
 
         saved = self.vault.get_credential("anthropic")
         self.assertIsNotNone(saved)
-        self.assertEqual(saved["access_token"], "[REDACTED_ANTHROPIC_KEY]")
+        self.assertEqual(saved["access_token"], _FAKE_ANTHROPIC_API_KEY)
 
     def test_cursor_api_key_onboarding(self) -> None:
         res = CursorAuthFlow.login(api_key="cur_live_token1234567890abcdef")
@@ -397,7 +400,7 @@ class TestAuthCLICommands(unittest.TestCase):
     def test_auth_status_json(self) -> None:
         # Pre-seed one credential
         self.vault.set_credential("anthropic", {
-            "access_token": "[REDACTED_ANTHROPIC_KEY]",
+            "access_token": _FAKE_ANTHROPIC_API_KEY,
             "token_type": "ApiKey",
             "profile": "test-profile",
             "expires_at": None,
@@ -415,7 +418,7 @@ class TestAuthCLICommands(unittest.TestCase):
         self.assertTrue(anthropic_stat["authenticated"])
         self.assertEqual(anthropic_stat["status"], "VALID")
         # Ensure plaintext secret is NEVER exposed in status JSON
-        self.assertNotIn("[REDACTED_ANTHROPIC_KEY]", capture.getvalue())
+        self.assertNotIn(_FAKE_ANTHROPIC_API_KEY, capture.getvalue())
         self.assertTrue(anthropic_stat["token_masked"].startswith("sk-ant"))
 
     def test_auth_login_via_cli(self) -> None:
@@ -544,7 +547,7 @@ class TestSilentRefreshTokenRotation(unittest.TestCase):
             vault = UniversalVault(vault_path=vault_file, force_file_vault=True)
 
             # Store an expiring Anthropic OAuth credential
-            old_at = "[REDACTED_ANTHROPIC_KEY]"
+            old_at = _FAKE_ANTHROPIC_OAUTH_TOKEN
             old_rt = "anthropic_refresh_old_12345"
             expiring_time = time.time() + 120  # Expires in 2 minutes (within default 900s buffer)
             token_data = {
