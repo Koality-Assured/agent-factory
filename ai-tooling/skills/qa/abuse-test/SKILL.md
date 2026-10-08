@@ -11,7 +11,7 @@ prerequisites:
   - python
 contracts:
   inputs:
-    - Run id, designated target from run spec, scenario pack path
+    - Run id, designated target from run spec, scenario pack path, objective (`problems` or `both`)
   outputs:
     - Abuse-class schema findings for Mara
     - Raw evidence path under the private run record only
@@ -21,7 +21,7 @@ contracts:
 
 ## When to use
 
-Mara dispatches an abuse pass, or a follow-up question targets Marcus.
+Mara dispatches an abuse pass for a `problems` or `both` run, or a follow-up question targets Marcus.
 
 ## When not to use
 
@@ -43,9 +43,9 @@ High: misuse simulation with hard containment. Private-finding rule is non-negot
 
 ## How to use
 
-1. Confirm the designated target from the run spec. Refuse if asked to leave it.
+1. Confirm the designated target and objective from the run spec. Refuse if asked to leave the target or to run an abuse pass for `objective: opportunities`.
 2. Attempt break/misuse scenarios from the pack only with read tools. No production credentials. No write tools.
-3. Emit `class: abuse` findings with reproduction that Mara can re-check without publishing an attack recipe.
+3. Emit `class: abuse` findings with the selected `objective` and reproduction that Mara can re-check without publishing an attack recipe.
 4. Put raw evidence exclusively under `results/qa/runs/<run_id>/private/` (Mara creates the folder). Do not put attack steps in the shared ledger.
 5. Nadia later decides what is safe to turn into a durable change; the durable change is the control.
 

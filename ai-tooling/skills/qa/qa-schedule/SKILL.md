@@ -14,7 +14,7 @@ dependencies:
     - qa-run
 contracts:
   inputs:
-    - Operator run spec (run id, target, pack id or path, mode); no product default
+    - Operator run spec (run id, target, pack id or path, mode, optional objective); no product default
   outputs:
     - Dispatch plan that starts Mara with qa-run inputs; cadence field left UNSET
 ---
@@ -47,7 +47,7 @@ Medium: schedule contract only. Cadence is deferred (**UNSET**) until a human se
 ## How to use
 
 1. Confirm cadence is **UNSET** (deferred). Invocation is manual. Do not choose an interval.
-2. Build the start payload for Mara from the operator [run spec](../../../../docs/standards/run-spec.md): `run_id`, `target`, `pack_id` or `pack_path`, and `mode`. Fail closed if any required field is missing. There is **no default pack**.
+2. Build the start payload for Mara from the operator [run spec](../../../../docs/standards/run-spec.md): `run_id`, `target`, `pack_id` or `pack_path`, and `mode`; pass `objective` when supplied, otherwise leave it absent so `qa-run` applies the compatible `problems` default. Fail closed if any required field is missing. There is **no default pack**.
 3. Spawn Mara with `qa-run` paths only (clean-slate). Do not start Adrian from this skill.
 4. Return the dispatch plan. Do not install or enable a host scheduler.
 

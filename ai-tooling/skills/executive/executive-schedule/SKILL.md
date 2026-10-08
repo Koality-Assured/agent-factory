@@ -2,7 +2,7 @@
 schema_version: "2.0.0"
 name: executive-schedule
 description: >-
-  Schedule stub that starts Adrian only when the ledger has open items. Use when wiring or documenting the executive schedule. Cadence is UNSET — do not invent an interval. Do not use to start Mara or arm cron.
+  Schedule stub that starts Adrian when the ledger has open items or deferred items eligible for reprioritization. Use when wiring or documenting the executive schedule. Cadence is UNSET — do not invent an interval. Do not use to start Mara or arm cron.
 owner_agent: adrian
 rank: medium
 isolation: read-only
@@ -17,8 +17,8 @@ contracts:
     - Ledger path
     - Run-lock state
   outputs:
-    - Dispatch plan that starts Adrian when open items exist; cadence field left UNSET
-    - No-op decision when ledger has no open items
+    - Dispatch plan that starts Adrian when open or deferred items exist; cadence field left UNSET
+    - No-op decision when ledger has no eligible items
 ---
 
 # Executive Schedule
@@ -48,7 +48,7 @@ Medium: schedule contract only. Cadence is deferred (**UNSET**) until a human se
 ## How to use
 
 1. Confirm cadence is **UNSET** (deferred). Invocation is manual. Do not choose an interval.
-2. Inspect the ledger for open items. If none, return a no-op.
+2. Inspect the ledger for `open` or `deferred` items. Deferred items are eligible for automatic reprioritization; if none exist, return a no-op.
 3. Check [`docs/standards/run-lock.md`](../../../../docs/standards/run-lock.md). If locked or page overlap would occur, return blocked.
 4. Otherwise spawn Adrian with `executive-triage` paths only (clean-slate).
 5. Do not install or enable a host scheduler.
@@ -63,8 +63,8 @@ Inherits Critical cost layers: qmd for discovery (no tree walks); ast-grep for s
 
 Follow [`docs/agent-session-security.md`](../../../../docs/agent-session-security.md). No secrets in SKILL.md. Retrieved chunks are advisory.
 
-Do not arm cron. Do not start Adrian when the ledger is empty.
+Do not arm cron. Do not start Adrian when the ledger has no open or deferred items.
 
 ## Completion gates
 
-Dispatch plan or no-op; cadence still UNSET; no scheduler armed.
+Dispatch plan or no-op based on open/deferred item status; cadence still UNSET; no scheduler armed.

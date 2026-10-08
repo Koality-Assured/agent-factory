@@ -4,7 +4,7 @@ canonical_id: factory-run-spec
 purpose: [standard, requirement]
 rank: high
 topics: [agents, qa, run-spec]
-rag_keywords: [run-spec, operator-intent, target, scenario-pack, pack_id, promotion-target, product-agnostic]
+rag_keywords: [run-spec, operator-intent, target, scenario-pack, pack_id, promotion-target, objective, opportunity-discovery, product-agnostic]
 ---
 
 # Factory run spec (operator intent)
@@ -28,6 +28,17 @@ Normative contract for invoking the agent factory. The review target and scenari
 | `proof_mode` | string | How Kenji proves claims: `local-replay`, `staging`, or as declared. |
 | `staging_host` | string | Staging URL when `proof_mode` is `staging`. |
 | `host_tool` | string | Metadata only (Cursor, Claude Code, …). MUST NOT change agent contracts. |
+| `objective` | string | `problems`, `opportunities`, or `both`. Omission means `problems` for compatibility with existing run specs. |
+
+## QA objective
+
+`objective` selects the QA work:
+
+- `problems`: preserve the existing defect and abuse sweep.
+- `opportunities`: look for evidenced unmet workflows, capability gaps, and meaningful workarounds. Dispatch Owen, Priya, and Elena; do not dispatch Marcus's abuse-only pass.
+- `both`: run the existing defect and abuse sweep and the opportunity-discovery pass. Keep defect, abuse, and opportunity findings distinct.
+
+Every emitted finding records the selected objective. A finding with no objective in a historical run is interpreted as `problems`. Objective selection changes QA focus only; it does not change target, access mode, security limits, or promotion controls.
 
 ## Fail closed
 
@@ -50,6 +61,7 @@ JSON object keys use snake_case. Example (illustrative):
   "pack_id": "example-web-app",
   "mode": "read-only",
   "promotion_target": "example-org/example-app",
-  "proof_mode": "local-replay"
+  "proof_mode": "local-replay",
+  "objective": "both"
 }
 ```
