@@ -44,7 +44,7 @@ After a claim-lock timeout, do not unlink a leftover `.claims.lock` based on age
 
 ## Isolation
 
-This skill *is* isolation. Parent/router **MUST** run `python scripts/routing/spawn_worktree.py` check/add/remove itself before other mutating skills. **MUST NOT spawn** `router-maintenance` to run that CLI, even bundled with other chores. After merge, the parent removes the worktree without a specialist. `spawn_worktree.py` writes claims on the primary checkout under `scratch/worktrees/` (gitignored). Those checkouts **must remain readable and writable by the host's agent file tools.**
+This skill *is* isolation. Parent/router **MUST** run `python scripts/routing/spawn_worktree.py` check/add before other mutating skills. After a PR is merged into `main`, the parent removes that exact worktree with `python scripts/cli/harness.py clean --branch <full-branch> --pr <number>`. The command verifies the merged PR, branch, and worktree HEAD, and refuses to remove untracked or ignored local data even with `--force`. Parent/router performs cleanup without a specialist; **MUST NOT spawn** `router-maintenance` for these CLI operations. `spawn_worktree.py` writes claims on the primary checkout under `scratch/worktrees/` (gitignored). Those checkouts **must remain readable and writable by the host's agent file tools.**
 
 Host ignore split (Cursor, with the same rule on other hosts):
 
@@ -64,9 +64,9 @@ On Windows, Cursor's Shell sandbox may be unable to enforce `workspace_readwrite
 2. `python scripts/routing/spawn_worktree.py check --areas <csv> --json`
 3. On overlap: **stop** and ask unless the human approved `--force`. Disjoint areas may run in parallel, each in its own worktree. On ok: `python scripts/routing/spawn_worktree.py add --slug <kebab> --areas <csv> --agent <owner>`
 4. Tell the specialist: workspace = printed `path`, branch = printed `branch`. Call `SetActiveBranch` if this session will commit there.
-5. After merge/PR: parent runs `python scripts/routing/spawn_worktree.py remove --slug <kebab>` — do not spawn a specialist for remove.
+5. After merge: parent runs `python scripts/cli/harness.py clean --branch <full-branch> --pr <number>` to remove the exact worktree and claim. If it reports untracked or ignored paths, preserve them and resolve the paths before retrying; `--force` does not override this guard.
 
-Do not nest a second worktree inside an existing one. Do not combine this with Task `best-of-n-runner` (double isolation). Parent runs check/add/remove; **MUST NOT spawn** `router-maintenance` to run `spawn_worktree.py`, even bundled with other chores.
+Do not nest a second worktree inside an existing one. Do not combine this with Task `best-of-n-runner` (double isolation). Parent runs `spawn_worktree.py check/add` and post-merge `harness clean`; **MUST NOT spawn** `router-maintenance` to run these isolation or cleanup CLIs, even bundled with other chores.
 
 Parent vs specialist writes:
 

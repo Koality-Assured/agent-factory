@@ -18,6 +18,7 @@ from pathlib import Path
 _LIB = Path(__file__).resolve().parents[1] / "_lib"
 sys.path.insert(0, str(_LIB))
 from areas import AreasYamlError, load_area_ids  # noqa: E402
+from git_status import local_data_paths, read_porcelain_status  # noqa: E402
 from paths import REPO_ROOT as ROOT  # noqa: E402
 
 
@@ -453,8 +454,13 @@ def cmd_add(
 
 
 def cmd_remove(slug: str, dry_run: bool, force: bool) -> int:
+    if not SLUG_RE.fullmatch(slug):
+        print("error: refusing to remove invalid worktree slug", file=sys.stderr)
+        return 2
     dest = worktree_path(slug)
     if dry_run:
+        if dest.exists() and _refuse_local_data(slug, dest):
+            return 1
         print(f"dry-run: git worktree remove {dest}")
         print(f"dry-run: delete {claim_path(slug)}")
         return 0
@@ -500,6 +506,9 @@ def cmd_remove(slug: str, dry_run: bool, force: bool) -> int:
                 print(f"removed {slug}")
                 return 0
 
+            if dest_state is True and _refuse_local_data(slug, dest):
+                return 1
+
             args = ["worktree", "remove", str(dest)]
             if force:
                 args.append("--force")
@@ -530,6 +539,31 @@ def cmd_remove(slug: str, dry_run: bool, force: bool) -> int:
         return 1
     print(f"removed {slug}")
     return 0
+
+
+def _refuse_local_data(slug: str, dest: Path) -> bool:
+    """Refuse removal when status cannot be checked or local data is present."""
+    status = read_porcelain_status(dest)
+    if status is None:
+        print(
+            f"error: cannot inspect local data for '{slug}'; preserving worktree",
+            file=sys.stderr,
+        )
+        return True
+    paths = local_data_paths(status)
+    if not paths:
+        return False
+    print(
+        f"error: refusing to remove '{slug}'; preserving untracked and ignored local data:",
+        file=sys.stderr,
+    )
+    for path in paths:
+        print(f"  {path!r}", file=sys.stderr)
+    print(
+        "move or back up these paths before retrying; --force does not override this guard",
+        file=sys.stderr,
+    )
+    return True
 
 
 def parse_areas(value: str | None) -> list[str]:
