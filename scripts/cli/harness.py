@@ -29,6 +29,7 @@ for _p in (str(_LIB_DIR), str(_SCRIPTS_DIR)):
 from areas import AreasYamlError, load_area_ids, load_area_records  # noqa: E402
 from md import agent_paths, load_agent_record  # noqa: E402
 from paths import REPO_ROOT  # noqa: E402
+from git_status import local_data_paths, porcelain_entries, read_porcelain_status  # noqa: E402
 
 from cli.provider_client import (  # noqa: E402
     ANTHROPIC_DEFAULT_MODEL,
@@ -145,21 +146,16 @@ def is_conventional_commit(msg: str) -> bool:
 def worktree_delete_blocked(status_porcelain: str, commits_not_in_base: int) -> str | None:
     """Return a refuse reason, or None when deletion is safe.
 
-    Untracked-only (`??`) and ignored (`!!`) lines do not block. Any other
-    porcelain status with a tracked change code blocks, as does
-    `commits_not_in_base > 0`.
+    Untracked and ignored paths are handled by the separate, non-overridable
+    local-data guard. Any other porcelain status with a tracked change code
+    blocks, as does `commits_not_in_base > 0`.
 
-    Lines that are not valid `git status --porcelain` status pairs are ignored
-    so unrelated git stdout (e.g. branch listings) cannot false-positive.
+    Invalid porcelain records are ignored so unrelated output cannot
+    false-positive.
     """
     porcelain_codes = set(" MADRCUT?!")
-    for line in (status_porcelain or "").splitlines():
-        if not line.strip():
-            continue
-        if len(line) < 2:
-            continue
-        xy = line[:2]
-        if not all(c in porcelain_codes for c in xy):
+    for xy, _path in porcelain_entries(status_porcelain or ""):
+        if not all(code in porcelain_codes for code in xy):
             continue
         if xy in ("??", "!!"):
             continue
@@ -173,26 +169,33 @@ def worktree_delete_blocked(status_porcelain: str, commits_not_in_base: int) -> 
     return None
 
 
-def _worktree_commits_not_in_base(wt_path: Path, base: str = "main") -> int:
+def _worktree_commits_not_in_base(wt_path: Path, base: str = "main") -> int | None:
     proc = run_git(
         ["rev-list", "--count", f"{base}..HEAD"],
         cwd=wt_path,
         check=False,
     )
     if proc.returncode != 0:
-        return 0
+        return None
     try:
         return int((proc.stdout or "").strip() or "0")
     except ValueError:
-        return 0
-
-
-def _inspect_worktree_delete_gate(wt_path: Path, base: str = "main") -> str | None:
-    if not wt_path.exists():
         return None
-    status = run_git(["status", "--porcelain"], cwd=wt_path, check=False)
-    commits = _worktree_commits_not_in_base(wt_path, base=base)
-    return worktree_delete_blocked(status.stdout or "", commits)
+
+
+def _inspect_worktree_delete_gate(
+    wt_path: Path, base: str = "main", *, allow_merged_pr_head: bool = False
+) -> tuple[str | None, list[str]]:
+    if not wt_path.exists():
+        return None, []
+    status = read_porcelain_status(wt_path)
+    if status is None:
+        return "unable to inspect worktree status; preserving worktree", []
+    data_paths = local_data_paths(status)
+    commits = 0 if allow_merged_pr_head else _worktree_commits_not_in_base(wt_path, base=base)
+    if commits is None:
+        return "unable to verify worktree commits; preserving worktree", data_paths
+    return worktree_delete_blocked(status, commits), data_paths
 
 
 # --- Command Handlers ---
@@ -587,11 +590,111 @@ def cmd_pr(args: argparse.Namespace) -> int:
     return 0
 
 
+def _clean_selector(args: argparse.Namespace) -> tuple[str | None, str | None]:
+    slug = getattr(args, "slug", None)
+    branch = getattr(args, "branch", None)
+    pr_number = getattr(args, "pr", None)
+    stale_hours = getattr(args, "stale_hours", 0.0)
+
+    if stale_hours < 0:
+        return None, "--stale-hours must be zero or greater"
+    if bool(branch) != bool(pr_number):
+        return None, "--branch and --pr must be supplied together"
+    if branch is not None and not branch.strip():
+        return None, "--branch must name a branch"
+    if pr_number is not None and pr_number <= 0:
+        return None, "--pr must be a positive GitHub pull request number"
+    if slug is not None and not SLUG_PATTERN.fullmatch(slug):
+        return None, "--slug must be a valid worktree slug"
+
+    selectors: list[str] = []
+    if slug is not None:
+        selectors.append("slug")
+    if branch is not None and pr_number is not None:
+        selectors.append("branch-pr")
+    if getattr(args, "merged", False):
+        selectors.append("merged")
+    if getattr(args, "stale", False) or stale_hours > 0:
+        selectors.append("stale")
+    if getattr(args, "auto", False):
+        selectors.append("auto")
+    if getattr(args, "all", False):
+        selectors.append("all")
+    if len(selectors) > 1:
+        return None, "cleanup selectors are mutually exclusive; choose exactly one"
+    return (selectors[0] if selectors else None), None
+
+
+def _verify_merged_pr_target(
+    primary_root: Path, branch: str, pr_number: int, wt_path: Path
+) -> str | None:
+    """Require a merged main PR whose head is the exact attached worktree HEAD."""
+    try:
+        proc = subprocess.run(
+            [
+                "gh",
+                "pr",
+                "view",
+                str(pr_number),
+                "--json",
+                "baseRefName,headRefName,headRefOid,mergedAt,state",
+            ],
+            cwd=primary_root,
+            check=False,
+            text=True,
+            capture_output=True,
+            encoding="utf-8",
+        )
+    except OSError:
+        return "unable to verify the GitHub pull request; preserving worktree"
+    if proc.returncode != 0:
+        return "unable to verify the GitHub pull request; preserving worktree"
+    try:
+        pr = json.loads(proc.stdout or "")
+    except (TypeError, json.JSONDecodeError):
+        return "GitHub returned invalid pull request metadata; preserving worktree"
+    if not isinstance(pr, dict):
+        return "GitHub returned invalid pull request metadata; preserving worktree"
+    if pr.get("state") != "MERGED" or not pr.get("mergedAt"):
+        return f"pull request #{pr_number} is not merged; preserving worktree"
+    if pr.get("baseRefName") != "main":
+        return f"pull request #{pr_number} was not merged into main; preserving worktree"
+    if pr.get("headRefName") != branch:
+        return f"pull request #{pr_number} head does not match branch '{branch}'; preserving worktree"
+    pr_head = pr.get("headRefOid")
+    if not isinstance(pr_head, str) or not pr_head:
+        return "GitHub did not provide the pull request head commit; preserving worktree"
+
+    if wt_path.exists():
+        branch_proc = run_git(["symbolic-ref", "--quiet", "--short", "HEAD"], cwd=wt_path, check=False)
+        head_proc = run_git(["rev-parse", "HEAD"], cwd=wt_path, check=False)
+        if branch_proc.returncode != 0 or branch_proc.stdout.strip() != branch:
+            return "worktree is not attached to the requested branch; preserving worktree"
+        if head_proc.returncode != 0 or head_proc.stdout.strip().lower() != pr_head.lower():
+            return "worktree HEAD differs from the merged pull request head; preserving worktree"
+    return None
+
+
+def _report_local_data_refusal(slug: str, paths: list[str]) -> None:
+    print(
+        f"error: refusing to remove '{slug}'; preserving untracked and ignored local data:",
+        file=sys.stderr,
+    )
+    for path in paths:
+        print(f"  {path!r}", file=sys.stderr)
+    print("move or back up these paths before retrying; --force does not override this guard", file=sys.stderr)
+
+
 def cmd_clean(args: argparse.Namespace) -> int:
+    selector, selector_error = _clean_selector(args)
+    if selector_error:
+        print(f"error: {selector_error}", file=sys.stderr)
+        return 2
+
     primary_root = get_primary_repo_root()
     claims = load_claims(primary_root)
 
-    # Determine merged branches
+    # Determine merged branches for the broad selectors and the candidate view.
     try:
         merged_proc = run_git(["branch", "--merged", "main"], cwd=primary_root, check=False)
         merged_branches = {
@@ -602,51 +705,72 @@ def cmd_clean(args: argparse.Namespace) -> int:
     except Exception:
         merged_branches = set()
 
-    stale_threshold = args.stale_hours
-    if (args.stale or args.auto) and stale_threshold <= 0:
+    stale_threshold = getattr(args, "stale_hours", 0.0)
+    if selector in {"stale", "auto"} and stale_threshold <= 0:
         stale_threshold = 24.0
 
-    # Classify claims
     targets: list[str] = []
-    now_utc = dt.datetime.now(dt.timezone.utc)
-    for c in claims:
-        slug = c.get("slug", "")
-        branch = c.get("branch", "")
-        c_path = Path(c.get("path", "")) if c.get("path") else (get_worktrees_dir(primary_root) / slug)
-        is_stale = not c_path.exists()
-        if not is_stale and stale_threshold > 0:
-            created_str = c.get("created_at") or c.get("created")
-            if created_str:
-                try:
-                    c_dt = dt.datetime.fromisoformat(created_str.replace("Z", "+00:00"))
-                    if (now_utc - c_dt).total_seconds() / 3600.0 >= stale_threshold:
-                        is_stale = True
-                except Exception:
-                    pass
-            exp_str = c.get("expires_at")
-            if exp_str:
-                try:
-                    exp_dt = dt.datetime.fromisoformat(exp_str.replace("Z", "+00:00"))
-                    if now_utc > exp_dt:
-                        is_stale = True
-                except Exception:
-                    pass
+    allow_merged_pr_head = False
+    if selector == "branch-pr":
+        branch = args.branch
+        matches = [c for c in claims if c.get("branch") == branch]
+        if len(matches) != 1:
+            print(
+                f"error: expected exactly one worktree claim for branch '{branch}', found {len(matches)}",
+                file=sys.stderr,
+            )
+            return 1
+        claim = matches[0]
+        slug = claim.get("slug")
+        if not isinstance(slug, str) or not SLUG_PATTERN.fullmatch(slug):
+            print("error: invalid worktree claim; preserving cleanup state", file=sys.stderr)
+            return 1
+        wt_path = get_worktrees_dir(primary_root) / slug
+        reason = _verify_merged_pr_target(primary_root, branch, args.pr, wt_path)
+        if reason:
+            print(f"error: {reason}", file=sys.stderr)
+            return 1
+        targets.append(slug)
+        allow_merged_pr_head = True
+    elif selector is not None:
+        now_utc = dt.datetime.now(dt.timezone.utc)
+        for c in claims:
+            slug = c.get("slug", "")
+            if not isinstance(slug, str) or not SLUG_PATTERN.fullmatch(slug):
+                continue
+            branch = c.get("branch", "")
+            c_path = Path(c.get("path", "")) if c.get("path") else (get_worktrees_dir(primary_root) / slug)
+            is_stale = not c_path.exists()
+            if not is_stale and stale_threshold > 0:
+                created_str = c.get("created_at") or c.get("created")
+                if created_str:
+                    try:
+                        c_dt = dt.datetime.fromisoformat(created_str.replace("Z", "+00:00"))
+                        if (now_utc - c_dt).total_seconds() / 3600.0 >= stale_threshold:
+                            is_stale = True
+                    except Exception:
+                        pass
+                exp_str = c.get("expires_at")
+                if exp_str:
+                    try:
+                        exp_dt = dt.datetime.fromisoformat(exp_str.replace("Z", "+00:00"))
+                        if now_utc > exp_dt:
+                            is_stale = True
+                    except Exception:
+                        pass
 
-        is_merged = branch in merged_branches
+            is_merged = branch in merged_branches
+            matches_selector = (
+                (selector == "slug" and slug == args.slug)
+                or selector == "all"
+                or (selector == "auto" and (is_merged or is_stale))
+                or (selector == "merged" and is_merged)
+                or (selector == "stale" and is_stale)
+            )
+            if matches_selector:
+                targets.append(slug)
 
-        if args.slug and slug == args.slug:
-            targets.append(slug)
-        elif args.all:
-            targets.append(slug)
-        elif args.auto and (is_merged or is_stale):
-            targets.append(slug)
-        elif args.merged and is_merged:
-            targets.append(slug)
-        elif (args.stale or args.stale_hours > 0) and is_stale:
-            targets.append(slug)
-
-    if not args.slug and not args.all and not args.merged and not args.stale and not args.auto and args.stale_hours <= 0:
-        # Display candidates
+    if selector is None:
         print("=== Worktree Cleanup Candidates ===")
         if not claims:
             print("  (no active worktrees or claims)")
@@ -665,7 +789,10 @@ def cmd_clean(args: argparse.Namespace) -> int:
             if not status_tags:
                 status_tags.append("ACTIVE")
             print(f"  [{'/'.join(status_tags)}] {slug} ({branch})")
-        print("\nSpecify --merged, --stale, --stale-hours <N>, --auto, --slug <slug>, or --all to clean.")
+        print(
+            "\nSpecify one selector: --slug <slug>, --branch <branch> --pr <number>, "
+            "--merged, --stale, --stale-hours <N>, --auto, or --all."
+        )
         return 0
 
     if not targets:
@@ -678,7 +805,13 @@ def cmd_clean(args: argparse.Namespace) -> int:
     blocked_any = False
     for slug in targets:
         wt_path = worktree_path(slug)
-        reason = _inspect_worktree_delete_gate(wt_path, base="main")
+        reason, local_paths = _inspect_worktree_delete_gate(
+            wt_path, base="main", allow_merged_pr_head=allow_merged_pr_head
+        )
+        if local_paths:
+            _report_local_data_refusal(slug, local_paths)
+            blocked_any = True
+            continue
         if reason and not args.force:
             print(
                 f"error: refusing to remove '{slug}': {reason} (pass --force to override)",
@@ -688,7 +821,8 @@ def cmd_clean(args: argparse.Namespace) -> int:
             continue
         if reason and args.force:
             print(f"warning: forcing remove of '{slug}' despite: {reason}", file=sys.stderr)
-        cmd_remove(slug=slug, dry_run=args.dry_run, force=args.force)
+        if cmd_remove(slug=slug, dry_run=args.dry_run, force=args.force) != 0:
+            blocked_any = True
 
     return 1 if blocked_any else 0
 
@@ -1569,8 +1703,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_pr.add_argument("--draft", action="store_true", help="Create as a draft PR")
 
     # clean
-    p_clean = sub.add_parser("clean", help="Prune merged worktrees and delete stale claims", parents=[shared])
+    p_clean = sub.add_parser("clean", help="Safely clean selected worktrees and claims", parents=[shared])
     p_clean.add_argument("--slug", help="Specific worktree slug to clean")
+    p_clean.add_argument("--branch", help="Exact branch to clean; requires --pr")
+    p_clean.add_argument("--pr", type=int, help="Merged PR number to verify with --branch")
     p_clean.add_argument("--merged", action="store_true", help="Clean all merged worktrees")
     p_clean.add_argument("--stale", action="store_true", help="Clean all stale claims")
     p_clean.add_argument("--stale-hours", type=float, default=0.0, help="Prune claims older than specified hours")

@@ -37,13 +37,13 @@ High when finishing mutating work. Scratch is untrusted and excluded from qmd; l
 
 ## Isolation
 
-`mutate` on `scratch`. Removing a git worktree uses `python scripts/routing/spawn_worktree.py remove --slug <slug>` from the primary checkout.
+`mutate` on `scratch`. Removing a git worktree uses `python scripts/routing/spawn_worktree.py remove --slug <slug>` from the primary checkout. Removal fails closed if Git status cannot be inspected or untracked/ignored paths remain; `--force` does not override that local-data guard. For merged PR cleanup, follow [`isolate-work`](../isolate-work/SKILL.md).
 
 ## How to use
 
 1. List `scratch/` (respect gitignore; it is still on disk).
 2. For each item: delete, or promote *durable* bits to the owning source area (`docs/`, `supporting/`, `SKILL.md`, `AGENT.md`). Never "promote" a review dump or scaffold tree into `results/` unless it is a finished human-facing deliverable (it almost never is).
-3. For worktrees: confirm branch merged or human OK to drop; then `spawn_worktree.py remove`.
+3. For worktrees: confirm branch merged or human OK to drop. For merged PRs use the exact branch/PR command in `isolate-work`; for other approved cleanup use `spawn_worktree.py remove`. Preserve any untracked or ignored paths it reports before retrying.
 4. Do not add `scratch/` to qmd collections.
 5. Do not commit scratch contents.
 
