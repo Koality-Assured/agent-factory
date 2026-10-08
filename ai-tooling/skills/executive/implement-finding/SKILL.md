@@ -14,7 +14,7 @@ dependencies:
     - isolate-work
 contracts:
   inputs:
-    - Deconflicted work item, acceptance criteria, parent-provided worktree path
+    - Deconflicted work item, finding expected result or opportunity `success_criteria`, parent-provided worktree path
   outputs:
     - Branch with claimed change; claimed behavior summary for Kenji
 ---

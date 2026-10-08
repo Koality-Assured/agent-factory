@@ -19,6 +19,8 @@ Findings MUST conform to [`docs/standards/finding-schema.md`](../../standards/fi
 
 ## Run inputs
 
+Set the objective only in the operator [run spec](../../standards/run-spec.md). A scenario pack may define tasks and persona context, but it must not select or override the objective.
+
 | Field | Value |
 | --- | --- |
 | `target` | From run spec (required) |
@@ -34,7 +36,7 @@ Cadence is **UNSET** unless the operator sets one. Do not invent an interval.
 | Persona | Focus |
 | --- | --- |
 | Priya | Follow the obvious path through the target. |
-| Elena | Correct / advanced use. Class overbuilt ideas as `power-user-preference`. |
+| Elena | Correct / advanced use. In opportunity runs, report only evidenced capability gaps with impact and testable success criteria. |
 | Owen | Get lost; try actions that should fail. Cap **five** findings. |
 | Marcus | Misuse **inside the declared target only**. No production credentials. No write tools. |
 
@@ -49,4 +51,4 @@ Optional pack-selected personas (for example accessibility) may be listed here w
 
 ## Success
 
-Mara records deduped schema-valid findings with reproduction. No target edits. Pack remains an operator-supplied input.
+Mara records deduped schema-valid findings with reproduction. Opportunity findings include concrete evidence, impact, and testable success criteria. No target edits. Pack remains an operator-supplied input.

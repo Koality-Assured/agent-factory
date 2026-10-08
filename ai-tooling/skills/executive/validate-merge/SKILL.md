@@ -2,7 +2,7 @@
 schema_version: "2.0.0"
 name: validate-merge
 description: >-
-  After Simone opens the pull request, check the diff against each assigned finding's expected result and confirm the PR is mergeable with no base-branch conflicts and matches the deconflicted work items. Use when Julian validates completeness and mergeability. Report pass or fail. Does not merge. A human still merges.
+  After Simone opens the pull request, check the diff against each assigned finding's expected result or opportunity success criteria and confirm the PR is mergeable with no base-branch conflicts and matches the deconflicted work items. Use when Julian validates completeness and mergeability. Report pass or fail. Does not merge. A human still merges.
 owner_agent: julian
 rank: high
 isolation: read-only
@@ -12,7 +12,7 @@ prerequisites:
   - git
 contracts:
   inputs:
-    - PR URL or number, deconflicted work items, finding expected results
+    - PR URL or number, deconflicted work items, finding expected results or opportunity success criteria
   outputs:
     - Completeness and mergeability pass or fail report; never a merge
 ---
@@ -44,8 +44,8 @@ High: last agent gate before human merge. Partial fixes must fail. Conflicts wit
 
 ## How to use
 
-1. Load the deconflicted work items and each assigned finding's expected result.
-2. Inspect the pull request diff. For each finding, confirm the change set meets the expected result. **Fail** the item if a finding is only partly fixed.
+1. Load the deconflicted work items and each assigned finding's expected result or opportunity `success_criteria`.
+2. Inspect the pull request diff. For each finding, confirm the change set meets its expected result or all opportunity success criteria. **Fail** the item if a finding is only partly addressed.
 3. Check the PR is mergeable: no conflicts with the base branch (`main` unless the run says otherwise). Confirm the change set matches the deconflicted work items (no surprise paths or dropped items).
 4. Record pass or fail under `results/qa/` with short rationale per item.
 5. Return pass/fail to Adrian. Do **not** merge. A human still merges.

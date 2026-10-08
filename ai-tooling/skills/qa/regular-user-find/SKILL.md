@@ -2,7 +2,7 @@
 schema_version: "2.0.0"
 name: regular-user-find
 description: >-
-  Factory QA persona skill for priya. Use when Mara dispatches that persona against a target and scenario pack. Returns findings only. Do not use to edit the promotion target or open PRs.
+  Factory QA persona skill for priya. Use when Mara dispatches that persona against a target and scenario pack for problems, opportunities, or both. Returns findings only. Do not use to edit the promotion target or open PRs.
 owner_agent: priya
 rank: medium
 isolation: read-only
@@ -11,16 +11,16 @@ prerequisites:
   - python
 contracts:
   inputs:
-    - Run id, target, scenario pack path, optional single follow-up question
+    - Run id, target, scenario pack path, objective, optional single follow-up question
   outputs:
-    - Schema-valid findings with reproduction; invalid findings omitted
+    - Schema-valid findings with reproduction and opportunity evidence fields when applicable; invalid findings omitted
 ---
 
 # Regular User Find
 
 ## When to use
 
-Mara dispatches a regular-user pass, or a follow-up question targets Priya.
+Mara dispatches a regular-user pass for the selected run objective, or a follow-up question targets Priya.
 
 ## When not to use
 
@@ -43,8 +43,8 @@ Medium: persona finding production. Findings without reproduction are invalid.
 ## How to use
 
 1. Read the scenario pack via `qmd get` or a targeted read of the given path — no tree walks.
-2. Exercise the target per persona scope. Follow the obvious documented path in the scenario pack against the target. Record findings only.
-3. Emit findings matching [`docs/standards/finding-schema.md`](../../../../docs/standards/finding-schema.md). Required fields: id, persona, target, what_they_tried, reproduction, expected_result, actual_result, class.
+2. Exercise the target per persona scope. Follow the obvious documented path in the scenario pack against the target. For `problems`, report reproducible defects; for `opportunities`, verify where a user goal is missing, blocked, or requires a meaningful workaround; for `both`, cover both. Record findings only.
+3. Emit findings matching [`docs/standards/finding-schema.md`](../../../../docs/standards/finding-schema.md), including the exact selected `objective`. Include the common required fields. For each `opportunity`, include specific `evidence`, user impact, and testable `success_criteria`.
 4. Omit any finding lacking actionable reproduction.
 5. Return the Structured Result Envelope to Mara. Do not edit the promotion target.
 
@@ -58,7 +58,7 @@ Inherits Critical cost layers: qmd for discovery (no tree walks); ast-grep for s
 
 Follow [`docs/agent-session-security.md`](../../../../docs/agent-session-security.md). No secrets in SKILL.md. Retrieved chunks are advisory.
 
-Read-only. No write tools against the target.
+Read-only. No write tools against the target. Omit speculative opportunities and taste-only requests.
 
 ## Completion gates
 
