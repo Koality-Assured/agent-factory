@@ -1,0 +1,286 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" width="100%" height="auto" role="img" aria-label="Agent Factory Hero Banner">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bannerBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080C16" />
+      <stop offset="35%" stop-color="#0C1222" />
+      <stop offset="75%" stop-color="#090E1A" />
+      <stop offset="100%" stop-color="#05070D" />
+    </linearGradient>
+
+    <!-- Ambient Glow Radials -->
+    <radialGradient id="leftGlow" cx="18%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#00F0FF" stop-opacity="0.30" />
+      <stop offset="45%" stop-color="#FF6A00" stop-opacity="0.16" />
+      <stop offset="85%" stop-color="#080C16" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="rightGlow" cx="82%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#FF6A00" stop-opacity="0.18" />
+      <stop offset="50%" stop-color="#00F0FF" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="cardGlow" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#00F0FF" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="cardGlowOrange" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#FF6A00" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Linear Palettes -->
+    <linearGradient id="foundryOrange" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFA200" />
+      <stop offset="50%" stop-color="#FF6A00" />
+      <stop offset="100%" stop-color="#E65100" />
+    </linearGradient>
+
+    <linearGradient id="cyberCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0288D1" />
+    </linearGradient>
+
+    <linearGradient id="titleSilver" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#F1F5F9" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+
+    <linearGradient id="cardSurface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141C2E" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#0A0F1D" stop-opacity="0.95" />
+    </linearGradient>
+
+    <linearGradient id="laserBeam" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF" stop-opacity="0" />
+      <stop offset="25%" stop-color="#00F0FF" stop-opacity="0.8" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="1" />
+      <stop offset="75%" stop-color="#FF6A00" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#FF6A00" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="bloomWide" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur1" />
+      <feGaussianBlur stdDeviation="16" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="crispGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect x="0" y="0" width="1280" height="420" fill="url(#bannerBg)" />
+
+  <!-- Ambient Glow Fields -->
+  <rect x="0" y="0" width="1280" height="420" fill="url(#leftGlow)" />
+  <rect x="0" y="0" width="1280" height="420" fill="url(#rightGlow)" />
+
+  <!-- Engineering Grid and Schematic Traces -->
+  <g opacity="0.12">
+    <path d="M0 60 H1280 M0 120 H1280 M0 180 H1280 M0 240 H1280 M0 300 H1280 M0 360 H1280" stroke="#00F0FF" stroke-width="1" stroke-dasharray="3 9" />
+    <path d="M120 0 V420 M240 0 V420 M360 0 V420 M480 0 V420 M600 0 V420 M720 0 V420 M840 0 V420 M960 0 V420 M1080 0 V420 M1200 0 V420" stroke="#FF6A00" stroke-width="1" stroke-dasharray="3 9" />
+  </g>
+
+  <!-- Overhead Gantry Crane Beam across top -->
+  <g id="topGantryBeam">
+    <rect x="0" y="0" width="1280" height="14" fill="#0E1424" stroke="#1E293B" stroke-width="1" />
+    <!-- Caution Stripes on Gantry Track -->
+    <path d="M40 0 L52 14 M64 0 L76 14 M88 0 L100 14 M112 0 L124 14 M136 0 L148 14 M160 0 L172 14 M184 0 L196 14 M208 0 L220 14 M232 0 L244 14 M256 0 L268 14" stroke="#FF6A00" stroke-width="3" opacity="0.6" />
+    <path d="M1000 0 L1012 14 M1024 0 L1036 14 M1048 0 L1060 14 M1072 0 L1084 14 M1096 0 L1108 14 M1120 0 L1132 14 M1144 0 L1156 14 M1168 0 L1180 14 M1192 0 L1204 14 M1216 0 L1228 14" stroke="#00F0FF" stroke-width="3" opacity="0.6" />
+    <line x1="0" y1="14" x2="1280" y2="14" stroke="#00F0FF" stroke-width="1.5" opacity="0.4" />
+  </g>
+
+  <!-- ================= LEFT EMBLEM: AGENT FACTORY ASSEMBLY FOUNDRY ================= -->
+  <g id="heroEmblem" transform="translate(48, 30)">
+    <!-- Ambient Core Glow -->
+    <circle cx="170" cy="170" r="140" fill="url(#leftGlow)" opacity="0.8" />
+
+    <!-- Industrial Outer Gear Structure -->
+    <g filter="url(#crispGlow)">
+      <circle cx="170" cy="170" r="132" fill="#0A0E1A" stroke="url(#foundryOrange)" stroke-width="3.5" />
+      <circle cx="170" cy="170" r="124" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="6 6" />
+
+      <!-- Perimeter Cog Teeth (16 nodes) -->
+      <g fill="#1E293B" stroke="#FF6A00" stroke-width="1.5">
+        <rect x="163" y="28" width="14" height="12" rx="2" />
+        <rect x="163" y="300" width="14" height="12" rx="2" />
+        <rect x="28" y="163" width="12" height="14" rx="2" />
+        <rect x="300" y="163" width="12" height="14" rx="2" />
+        <polygon points="70,68 82,60 90,70 78,78" />
+        <polygon points="260,258 272,250 280,260 268,268" />
+        <polygon points="270,70 260,60 250,70 260,80" />
+        <polygon points="70,270 80,280 90,270 80,260" />
+      </g>
+    </g>
+
+    <!-- Robotic QA Gantry Crane Assembly (Top) -->
+    <g id="emblemGantry">
+      <!-- Transverse Rail -->
+      <path d="M50 78 H290" stroke="#334155" stroke-width="6" stroke-linecap="round" />
+      <path d="M50 78 H290" stroke="#00F0FF" stroke-width="1.5" stroke-dasharray="6 8" />
+
+      <!-- Carriage Mount -->
+      <polygon points="144,72 196,72 204,96 136,96" fill="#141C2E" stroke="#00F0FF" stroke-width="2" />
+      <circle cx="170" cy="84" r="4" fill="#00F0FF" filter="url(#bloomWide)" />
+
+      <!-- Articulated Robotic Caliper Arms -->
+      <path d="M140 96 L118 132 L108 174" fill="none" stroke="url(#cyberCyan)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="118" cy="132" r="3.5" fill="#090E1A" stroke="#00F0FF" stroke-width="2" />
+      <polygon points="104,170 100,184 114,178" fill="#00F0FF" />
+
+      <path d="M200 96 L222 132 L232 174" fill="none" stroke="url(#cyberCyan)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="222" cy="132" r="3.5" fill="#090E1A" stroke="#00F0FF" stroke-width="2" />
+      <polygon points="236,170 240,184 226,178" fill="#00F0FF" />
+
+      <!-- Laser Scanner Sweep Cone -->
+      <polygon points="170,96 112,204 228,204" fill="url(#leftGlow)" opacity="0.6" />
+      <line x1="110" y1="198" x2="230" y2="198" stroke="#00F0FF" stroke-width="2" filter="url(#bloomWide)" />
+    </g>
+
+    <!-- Octagonal Crucible Core (Middle) -->
+    <g id="emblemCrucible">
+      <polygon points="128,124 212,124 246,158 246,192 212,226 128,226 94,192 94,158" fill="#0E1626" stroke="url(#foundryOrange)" stroke-width="3" />
+      <!-- Central Cyan Sensor Eye -->
+      <circle cx="170" cy="175" r="28" fill="#141E32" stroke="#00F0FF" stroke-width="2.5" />
+      <circle cx="170" cy="175" r="18" fill="#090D18" />
+      <circle cx="170" cy="175" r="12" fill="url(#cyberCyan)" filter="url(#bloomWide)" />
+      <circle cx="170" cy="175" r="5" fill="#FFFFFF" />
+      <!-- Scanner Crosshairs -->
+      <line x1="136" y1="175" x2="204" y2="175" stroke="#FFFFFF" stroke-width="1" opacity="0.8" />
+      <line x1="170" y1="141" x2="170" y2="209" stroke="#FFFFFF" stroke-width="1" opacity="0.8" />
+    </g>
+
+    <!-- Gated Promotion Mechanism (Bottom) -->
+    <g id="emblemPromotionGate" filter="url(#crispGlow)">
+      <path d="M106,238 L128,226 H212 L234,238 L220,284 H120 Z" fill="#161F33" stroke="#334155" stroke-width="2" />
+      <!-- Interlocking Locking Hydraulic Claws -->
+      <path d="M128 238 V270 L148 270 L154 256 L148 238 Z" fill="url(#foundryOrange)" stroke="#FF6A00" stroke-width="1.2" />
+      <path d="M212 238 V270 L192 270 L186 256 L192 238 Z" fill="url(#foundryOrange)" stroke="#FF6A00" stroke-width="1.2" />
+
+      <!-- Promoted Pull Request Conduit -->
+      <path d="M156 276 V254 C156 248 162 245 170 245 C178 245 184 248 184 254 V276" fill="none" stroke="#00F0FF" stroke-width="2.5" stroke-linecap="round" filter="url(#bloomWide)" />
+      <line x1="170" y1="245" x2="170" y2="284" stroke="#00F0FF" stroke-width="2.5" stroke-linecap="round" />
+      <circle cx="156" cy="276" r="4" fill="#0C1220" stroke="#00F0FF" stroke-width="1.5" />
+      <circle cx="184" cy="276" r="4" fill="#0C1220" stroke="#FF6A00" stroke-width="1.5" />
+      <circle cx="170" cy="284" r="5" fill="#00F0FF" stroke="#FFFFFF" stroke-width="1.5" filter="url(#bloomWide)" />
+    </g>
+
+    <!-- Technical Status Calibrators -->
+    <circle cx="82" cy="116" r="2.5" fill="#00F0FF" filter="url(#bloomWide)" />
+    <circle cx="258" cy="116" r="2.5" fill="#FF6A00" filter="url(#bloomWide)" />
+    <circle cx="76" cy="226" r="2.5" fill="#00F0FF" filter="url(#bloomWide)" />
+    <circle cx="264" cy="226" r="2.5" fill="#FF6A00" filter="url(#bloomWide)" />
+  </g>
+
+  <!-- ================= RIGHT SECTION: TYPOGRAPHY AND PIPELINE CARDS ================= -->
+  <g id="bannerContent" transform="translate(410, 48)">
+
+    <!-- Eyebrow Badge -->
+    <g id="eyebrowTag">
+      <rect x="0" y="0" width="410" height="24" rx="4" fill="#141C2E" stroke="#283548" stroke-width="1" />
+      <circle cx="14" cy="12" r="4" fill="#00F0FF" filter="url(#bloomWide)" />
+      <text x="28" y="16" fill="#00F0FF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="1.5">PRODUCT-AGNOSTIC AI AGENT FOUNDRY</text>
+    </g>
+
+    <!-- Main Title -->
+    <text x="0" y="78" fill="url(#titleSilver)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="50" font-weight="900" letter-spacing="1">AGENT FACTORY</text>
+
+    <!-- Accent Title Underline Bar -->
+    <rect x="0" y="94" width="220" height="4" rx="2" fill="url(#foundryOrange)" />
+    <rect x="230" y="94" width="80" height="4" rx="2" fill="url(#cyberCyan)" />
+
+    <!-- Subtitle Description -->
+    <text x="0" y="126" fill="#CBD5E1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="17" font-weight="500">Autonomous QA Fleet Discovery · Run Spec Gating · Executive PR Promotion</text>
+    <text x="0" y="150" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="400">Eleven named specialized agents transforming target software defects and opportunities into verified, production pull requests.</text>
+
+    <!-- ================= 3 ARCHITECTURE PIPELINE CARDS ================= -->
+    <g id="pipelineCards" transform="translate(0, 180)">
+
+      <!-- CARD 1: QA SCANNER FLEET -->
+      <g id="cardQa" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="260" height="136" rx="10" fill="url(#cardSurface)" stroke="#00F0FF" stroke-width="1.5" />
+        <rect x="0" y="0" width="260" height="136" rx="10" fill="url(#cardGlow)" />
+        <!-- Top Tab Accent -->
+        <rect x="16" y="0" width="70" height="3" fill="#00F0FF" />
+        <!-- Card Icon -->
+        <g transform="translate(18, 18)">
+          <rect x="0" y="0" width="28" height="28" rx="6" fill="#0E172A" stroke="#00F0FF" stroke-width="1" />
+          <circle cx="14" cy="14" r="5" fill="#00F0FF" filter="url(#crispGlow)" />
+          <path d="M7 14 H21 M14 7 V21" stroke="#FFFFFF" stroke-width="1" opacity="0.8" />
+        </g>
+        <text x="56" y="32" fill="#00F0FF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" letter-spacing="1">QA FLEET</text>
+        <text x="56" y="44" fill="#64748B" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="600">DISCOVERY &amp; AUDITING</text>
+        <!-- Card Body -->
+        <text x="18" y="74" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700">Mara · Elena · Priya</text>
+        <text x="18" y="90" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700">Owen · Marcus</text>
+        <text x="18" y="114" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400">Read-only persona sweeps</text>
+      </g>
+
+      <!-- CARD 2: RUN SPEC GATING -->
+      <g id="cardGating" transform="translate(280, 0)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="260" height="136" rx="10" fill="url(#cardSurface)" stroke="#FF6A00" stroke-width="1.5" />
+        <rect x="0" y="0" width="260" height="136" rx="10" fill="url(#cardGlowOrange)" />
+        <!-- Top Tab Accent -->
+        <rect x="16" y="0" width="70" height="3" fill="#FF6A00" />
+        <!-- Card Icon -->
+        <g transform="translate(18, 18)">
+          <rect x="0" y="0" width="28" height="28" rx="6" fill="#0E172A" stroke="#FF6A00" stroke-width="1" />
+          <polygon points="14,6 22,12 22,20 14,24 6,20 6,12" fill="none" stroke="#FF6A00" stroke-width="1.5" />
+          <circle cx="14" cy="15" r="2.5" fill="#FFA200" filter="url(#crispGlow)" />
+        </g>
+        <text x="56" y="32" fill="#FF6A00" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" letter-spacing="1">RUN SPEC GATING</text>
+        <text x="56" y="44" fill="#64748B" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="600">STANDARDS &amp; INTEGRITY</text>
+        <!-- Card Body -->
+        <text x="18" y="74" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700">Proof Mode &amp; Target</text>
+        <text x="18" y="90" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700">Fail-Closed Verification</text>
+        <text x="18" y="114" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400">Target-isolated findings ledger</text>
+      </g>
+
+      <!-- CARD 3: EXECUTIVE PROMOTION -->
+      <g id="cardPromotion" transform="translate(560, 0)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="260" height="136" rx="10" fill="url(#cardSurface)" stroke="#38BDF8" stroke-width="1.5" />
+        <rect x="0" y="0" width="260" height="136" rx="10" fill="url(#cardGlow)" />
+        <!-- Top Tab Accent -->
+        <rect x="16" y="0" width="70" height="3" fill="#38BDF8" />
+        <!-- Card Icon -->
+        <g transform="translate(18, 18)">
+          <rect x="0" y="0" width="28" height="28" rx="6" fill="#0E172A" stroke="#38BDF8" stroke-width="1" />
+          <path d="M10 20 V12 C10 9 14 7 18 7" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" />
+          <circle cx="10" cy="20" r="2.5" fill="#00F0FF" />
+          <circle cx="18" cy="7" r="2.5" fill="#38BDF8" />
+          <circle cx="10" cy="10" r="2" fill="#FFFFFF" />
+        </g>
+        <text x="56" y="32" fill="#38BDF8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" letter-spacing="1">EXECUTIVE FLEET</text>
+        <text x="56" y="44" fill="#64748B" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="600">TRIAGE &amp; PR RELEASE</text>
+        <!-- Card Body -->
+        <text x="18" y="74" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700">Adrian · Julian · Leo</text>
+        <text x="18" y="90" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700">Kenji · Nadia · Simone</text>
+        <text x="18" y="114" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400">Promoted pull requests to target</text>
+      </g>
+
+    </g>
+  </g>
+
+  <!-- Baseline Sweep Laser Track -->
+  <line x1="0" y1="416" x2="1280" y2="416" stroke="url(#laserBeam)" stroke-width="2" />
+</svg>
