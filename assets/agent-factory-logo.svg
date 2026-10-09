@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" role="img" aria-label="Agent Factory Logo">
+  <defs>
+    <!-- Background Canvas Gradients -->
+    <radialGradient id="bgGradient" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#111726" />
+      <stop offset="50%" stop-color="#0B0F19" />
+      <stop offset="100%" stop-color="#05070B" />
+    </radialGradient>
+
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00F0FF" stop-opacity="0.45" />
+      <stop offset="40%" stop-color="#FF6A00" stop-opacity="0.20" />
+      <stop offset="80%" stop-color="#00F0FF" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="laserSweep" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#00F0FF" stop-opacity="0.6" />
+      <stop offset="30%" stop-color="#00D2FF" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Metallic and Neon Linear Gradients -->
+    <linearGradient id="orangeFoundry" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFA200" />
+      <stop offset="45%" stop-color="#FF6A00" />
+      <stop offset="100%" stop-color="#D84315" />
+    </linearGradient>
+
+    <linearGradient id="electricCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F7FA" />
+      <stop offset="30%" stop-color="#00F0FF" />
+      <stop offset="100%" stop-color="#0288D1" />
+    </linearGradient>
+
+    <linearGradient id="gunmetalMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="50%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <linearGradient id="darkArmor" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#1E2538" />
+      <stop offset="100%" stop-color="#28334E" />
+    </linearGradient>
+
+    <linearGradient id="rimBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="35%" stop-color="#334155" />
+      <stop offset="65%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#FF6A00" />
+    </linearGradient>
+
+    <!-- Glow and Shadow Filters -->
+    <filter id="neonBloom" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur1" />
+      <feGaussianBlur stdDeviation="14" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.7" />
+    </filter>
+  </defs>
+
+  <!-- Background Base with Rounded Squircle -->
+  <rect x="16" y="16" width="480" height="480" rx="96" ry="96" fill="url(#bgGradient)" stroke="url(#rimBorder)" stroke-width="3" filter="url(#dropShadow)" />
+
+  <!-- Technical Circuit Grid Background Pattern -->
+  <g opacity="0.15">
+    <path d="M80 60 H432 M80 120 H432 M80 180 H432 M80 240 H432 M80 300 H432 M80 360 H432 M80 420 H432" stroke="#00F0FF" stroke-width="1" stroke-dasharray="4 8" />
+    <path d="M60 80 V432 M120 80 V432 M180 80 V432 M240 80 V432 M300 80 V432 M360 80 V432 M420 80 V432" stroke="#FF6A00" stroke-width="1" stroke-dasharray="4 8" />
+    <!-- Calibration crosshairs -->
+    <circle cx="80" cy="80" r="3" fill="#00F0FF" />
+    <circle cx="432" cy="80" r="3" fill="#FF6A00" />
+    <circle cx="80" cy="432" r="3" fill="#FF6A00" />
+    <circle cx="432" cy="432" r="3" fill="#00F0FF" />
+  </g>
+
+  <!-- Central Ambient Bloom -->
+  <circle cx="256" cy="256" r="180" fill="url(#coreGlow)" />
+
+  <!-- Industrial Gear and Foundry Ring Outer Layer -->
+  <g id="foundryGear" filter="url(#subtleGlow)">
+    <!-- Cog teeth around perimeter -->
+    <path d="M240 76 H272 L278 102 L298 107 L320 89 L344 103 L340 129 L358 141 L381 129 L399 151 L388 174 L401 191 L426 186 L435 213 L414 231 L420 252 L444 262 L439 292 L414 298 L411 319 L430 339 L414 361 L391 352 L375 367 L382 393 L357 407 L340 388 L320 397 L317 423 L286 427 L280 401 L256 403 L232 401 L226 427 L195 423 L192 397 L172 388 L155 407 L130 393 L137 367 L121 352 L98 361 L82 339 L101 319 L98 298 L73 292 L68 262 L92 252 L98 231 L77 213 L86 186 L111 191 L124 174 L113 151 L131 129 L154 141 L172 129 L168 103 L192 89 L214 107 L234 102 Z" fill="url(#darkArmor)" stroke="#FF6A00" stroke-width="2" stroke-linejoin="round" />
+    <!-- Inner Gear Rim -->
+    <circle cx="256" cy="256" r="142" fill="#0A0E18" stroke="url(#orangeFoundry)" stroke-width="4" />
+    <circle cx="256" cy="256" r="136" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="6 6" />
+  </g>
+
+  <!-- Robotic QA Gantry Top Carriage and Guide Rails -->
+  <g id="qaGantry">
+    <!-- Upper Gantry Rail -->
+    <path d="M110 134 H402" stroke="#334155" stroke-width="8" stroke-linecap="round" />
+    <path d="M110 134 H402" stroke="#00F0FF" stroke-width="2" stroke-dasharray="8 12" />
+
+    <!-- Left and Right Gantry Anchors -->
+    <rect x="104" y="122" width="24" height="24" rx="4" fill="url(#gunmetalMetal)" stroke="#00F0FF" stroke-width="2" />
+    <rect x="384" y="122" width="24" height="24" rx="4" fill="url(#gunmetalMetal)" stroke="#FF6A00" stroke-width="2" />
+
+    <!-- Gantry Robotic Carriage Head -->
+    <polygon points="228,126 284,126 292,154 220,154" fill="url(#darkArmor)" stroke="#00F0FF" stroke-width="2" />
+    <circle cx="256" cy="140" r="5" fill="#00F0FF" filter="url(#neonBloom)" />
+
+    <!-- Twin Robotic Caliper Arms -->
+    <path d="M224 154 L198 196 L184 246" fill="none" stroke="url(#electricCyan)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="198" cy="196" r="4" fill="#0B0F19" stroke="#00F0FF" stroke-width="2" />
+    <polygon points="180,240 174,258 190,250" fill="#00F0FF" />
+
+    <path d="M288 154 L314 196 L328 246" fill="none" stroke="url(#electricCyan)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="314" cy="196" r="4" fill="#0B0F19" stroke="#00F0FF" stroke-width="2" />
+    <polygon points="332,240 338,258 322,250" fill="#00F0FF" />
+
+    <!-- QA Laser Inspection Beam (Conical Projection) -->
+    <polygon points="256,154 186,280 326,280" fill="url(#laserSweep)" />
+    <line x1="180" y1="270" x2="332" y2="270" stroke="#00F0FF" stroke-width="2.5" filter="url(#neonBloom)" />
+  </g>
+
+  <!-- Central Promotion Crucible and Foundry Aperture Core -->
+  <g id="promotionCore">
+    <!-- Octagonal Crucible Base -->
+    <polygon points="206,196 306,196 348,238 348,274 306,316 206,316 164,274 164,238" fill="#0E1424" stroke="url(#orangeFoundry)" stroke-width="3.5" />
+
+    <!-- Neon Circuit Inlays inside Crucible -->
+    <path d="M186 256 H216 L232 240 H280 L296 256 H326" fill="none" stroke="#00F0FF" stroke-width="2" opacity="0.8" />
+    <circle cx="216" cy="256" r="3" fill="#00F0FF" />
+    <circle cx="296" cy="256" r="3" fill="#00F0FF" />
+
+    <!-- Central Glowing Core Eye -->
+    <circle cx="256" cy="256" r="34" fill="url(#darkArmor)" stroke="#00F0FF" stroke-width="3" />
+    <circle cx="256" cy="256" r="24" fill="#070B14" />
+    <circle cx="256" cy="256" r="16" fill="url(#electricCyan)" filter="url(#neonBloom)" />
+    <circle cx="256" cy="256" r="7" fill="#FFFFFF" />
+
+    <!-- Laser Scanning Crosshair -->
+    <line x1="214" y1="256" x2="298" y2="256" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9" />
+    <line x1="256" y1="214" x2="256" y2="298" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9" />
+  </g>
+
+  <!-- Gated Pull Request Promotion Foundry (Lower Lock Mechanism) -->
+  <g id="promotionGate" filter="url(#subtleGlow)">
+    <!-- Heavy Mechanical Gate Housing -->
+    <path d="M176 332 L206 316 H306 L336 332 L316 384 H196 Z" fill="url(#gunmetalMetal)" stroke="#334155" stroke-width="2" />
+
+    <!-- Promotion Vault Gate Jaws (Interlocking Hydraulic Clamps) -->
+    <path d="M204 332 V368 L228 368 L236 352 L228 332 Z" fill="url(#orangeFoundry)" stroke="#FF6A00" stroke-width="1.5" />
+    <path d="M308 332 V368 L284 368 L276 352 L284 332 Z" fill="url(#orangeFoundry)" stroke="#FF6A00" stroke-width="1.5" />
+
+    <!-- Git Branch / PR Promotion Node (The Gated Release Conduit) -->
+    <path d="M240 374 V348 C240 342 248 338 256 338 C264 338 272 342 272 348 V374" fill="none" stroke="#00F0FF" stroke-width="3" stroke-linecap="round" filter="url(#neonBloom)" />
+    <line x1="256" y1="338" x2="256" y2="382" stroke="#00F0FF" stroke-width="3" stroke-linecap="round" />
+
+    <!-- PR Nodes -->
+    <circle cx="240" cy="374" r="5" fill="#0A0F1D" stroke="#00F0FF" stroke-width="2" />
+    <circle cx="272" cy="374" r="5" fill="#0A0F1D" stroke="#FF6A00" stroke-width="2" />
+    <circle cx="256" cy="382" r="6" fill="#00F0FF" stroke="#FFFFFF" stroke-width="2" filter="url(#neonBloom)" />
+  </g>
+
+  <!-- Industrial Caution Chevron Accents at Base -->
+  <g id="cautionChevrons" opacity="0.85">
+    <polygon points="216,408 226,408 218,422 208,422" fill="#FF6A00" />
+    <polygon points="236,408 246,408 238,422 228,422" fill="#FF6A00" />
+    <polygon points="256,408 266,408 258,422 248,422" fill="#FF6A00" />
+    <polygon points="276,408 286,408 278,422 268,422" fill="#FF6A00" />
+    <polygon points="296,408 306,408 298,422 288,422" fill="#FF6A00" />
+  </g>
+
+  <!-- Status and Fleet Indicator Sparks -->
+  <circle cx="162" cy="180" r="3" fill="#00F0FF" filter="url(#neonBloom)" />
+  <circle cx="350" cy="180" r="3" fill="#FF6A00" filter="url(#neonBloom)" />
+  <circle cx="144" cy="316" r="3.5" fill="#00F0FF" filter="url(#neonBloom)" />
+  <circle cx="368" cy="316" r="3.5" fill="#FF6A00" filter="url(#neonBloom)" />
+</svg>
