@@ -5,6 +5,15 @@ Entries newest first. Append via `python scripts/change-history/append_change_hi
 ## Entries
 
 
+
+### 2026-10-10 — docs: add portable code repository QA pack
+
+- **Requesting user:** repository maintainer
+- **AI agent:** Cursor agent
+- **User request:** Add reusable QA coverage for varied code repositories through a generic base pack and explicit overlays.
+- **Summary:**
+  - Added a static-first code-repository scenario and a self-contained overlay contract for canonical QA runs.
+
 ### 2026-10-08 — Prevent local data loss during worktree cleanup
 
 - **Requesting user:** Repository maintainer
