@@ -9,7 +9,7 @@ rag_keywords: [scenario-pack, overlay, pack-path, private-target, operator-inten
 
 # Temporary domain overlays for QA packs
 
-An overlay adapts the [general code-repository pack](examples/code-repository.md) for one operator-authorized run. Keep the target-specific copy in the gitignored `docs/qa/scenario-packs/overlays/` area or in an operator-controlled private location.
+An overlay adapts the [general code-repository pack](examples/code-repository.md) for one operator-authorized run. Before writing a repo-local overlay, run `git check-ignore -v <overlay-path>` and confirm that a matching ignore rule covers the exact destination. Keep the target-specific copy in the gitignored `docs/qa/scenario-packs/overlays/` area or in an operator-controlled private location. If the path is not ignored, use a private location outside the repository; do not add target-specific content to the index.
 
 ## Build one self-contained pack
 
@@ -49,7 +49,7 @@ Check each item manually before dispatch:
 - The run spec contains required `run_id`, `target`, and `mode`, plus exactly one of `pack_id` or `pack_path`. If `objective` is present, it remains run-spec-owned and is `problems`, `opportunities`, or `both`; omission defaults to `problems`. The pack does not set or override run values.
 - Each domain-specific assumption points to observable target evidence, or is marked unknown and excluded from the tasks.
 - The actual pack has no unresolved placeholders or hard-coded workstation paths.
-- Private target details remain in the gitignored overlay or another private location; no such details appear in public Factory docs.
+- Before writing a repo-local overlay, `git check-ignore -v <overlay-path>` reports the matching ignore rule for the exact destination; otherwise use a private location outside the repository. Private target details remain in that ignored overlay or other private location, and no such details appear in public Factory docs.
 - The base pack access limits and named-persona dispatch remain intact.
 
 ## Keep run history separate
