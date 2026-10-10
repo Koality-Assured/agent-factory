@@ -6,6 +6,15 @@ Entries newest first. Append via `python scripts/change-history/append_change_hi
 
 
 
+
+### 2026-10-10 — docs: generalize QA packs for varied targets
+
+- **Requesting user:** repository maintainer
+- **AI agent:** Codex agent
+- **User request:** Extend the Agent Factory QA pack contract beyond code repositories to other authorized target surfaces.
+- **Summary:**
+  - Generalized one-run pack guidance for any target surface observable with available and authorized tools, with explicit access, evidence, and stop conditions.
+
 ### 2026-10-10 — docs: add portable code repository QA pack
 
 - **Requesting user:** repository maintainer
