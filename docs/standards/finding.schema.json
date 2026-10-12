@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Finding",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "persona": { "type": "string" },
+    "target": { "type": "string" },
+    "objective": { "type": "string", "enum": ["problems", "opportunities", "both"] },
+    "what_they_tried": { "type": "string" },
+    "reproduction": { "type": "string", "minLength": 1 },
+    "expected_result": { "type": "string" },
+    "actual_result": { "type": "string" },
+    "class": { "type": "string", "enum": ["defect", "opportunity", "abuse"] },
+    "evidence": { "type": "array", "items": { "type": "string" } },
+    "impact": { "type": "string" },
+    "success_criteria": { "type": "array", "items": { "type": "string" } },
+    "triage_status": { "type": "string", "enum": ["open", "assigned", "deferred", "rejected", "closed"] },
+    "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+    "reason": { "type": "string" }
+  },
+  "required": [
+    "id", "persona", "target", "what_they_tried", "reproduction",
+    "expected_result", "actual_result", "class"
+  ],
+  "allOf": [
+    {
+      "if": { "properties": { "class": { "const": "opportunity" } } },
+      "then": {
+        "required": ["evidence", "impact", "success_criteria"]
+      }
+    },
+    {
+      "if": { "properties": { "triage_status": { "enum": ["deferred", "rejected"] } } },
+      "then": {
+        "required": ["reason"]
+      }
+    }
+  ]
+}

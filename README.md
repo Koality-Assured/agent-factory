@@ -12,8 +12,7 @@
 
 [![Agent Factory CI](https://github.com/Koality-Assured/agent-factory/actions/workflows/ci.yml/badge.svg)](https://github.com/Koality-Assured/agent-factory/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](pyproject.toml)
-[![Roster: 11 Named Agents](https://img.shields.io/badge/roster-11%20Named%20Agents-orange.svg)](ai-tooling/agents/)
+[![Roster: 30 Total Agents](https://img.shields.io/badge/roster-30%20Total%20Agents-orange.svg)](ai-tooling/agents/)
 
 <br/>
 
@@ -21,7 +20,7 @@
 
 Public, product-agnostic AI agent factory. Any calling harness or central router (such as `ai-router`) can invoke it with a declarative [run spec](./docs/standards/run-spec.md): a specialized QA fleet discovers issues and opportunities against a **declared target**, and a gated executive fleet converts verified findings into pull requests targeting a **declared promotion target**.
 
-Eleven named agents and their specialized skill families live here. Callers pin a git ref of this repository and pass `AGENT.md` / `SKILL.md` paths plus the run spec contract. They do not need a second copy of the roster. Nothing in this tree hard-codes a product, employer system, host IDE, or calling harness.
+Thirty agents (eleven named personas and nineteen specialized operators) and their specialized skill families live here. Callers pin a git ref of this repository and pass `AGENT.md` / `SKILL.md` paths plus the run spec contract. They do not need a second copy of the roster. Nothing in this tree hard-codes a product, employer system, host IDE, or calling harness.
 
 ---
 

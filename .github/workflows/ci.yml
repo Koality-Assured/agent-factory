@@ -13,14 +13,14 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Compile kept Python
         run: python -m compileall -q -f scripts .harness
       - name: Script tests
         run: |
-          python -m pip install --quiet pyyaml cryptography
+          python -m pip install --quiet pyyaml==6.0.1 cryptography==42.0.5 jsonschema==4.22.0
           if [ -d scripts/tests ]; then python -m unittest discover -s scripts/tests -v; fi

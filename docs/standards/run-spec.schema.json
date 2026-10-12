@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Run Spec",
+  "type": "object",
+  "properties": {
+    "run_id": { "type": "string" },
+    "target": { "type": "string" },
+    "pack_id": { "type": "string" },
+    "pack_path": { "type": "string" },
+    "mode": { "type": "string" },
+    "promotion_target": { "type": "string" },
+    "proof_mode": { "type": "string" },
+    "staging_host": { "type": "string" },
+    "host_tool": { "type": "string" },
+    "objective": { "type": "string", "enum": ["problems", "opportunities", "both"] }
+  },
+  "required": ["run_id", "target", "mode"],
+  "anyOf": [
+    { "required": ["pack_id"] },
+    { "required": ["pack_path"] }
+  ]
+}
