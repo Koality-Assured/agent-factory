@@ -2,7 +2,7 @@
 schema_version: "2.0.0"
 name: security-intent-gate
 description: >-
-  Required security and intent gate after Kenji proof (local-replay and/or declared staging per run-spec proof_mode). Use when Adrian advances an item to Nadia. Blocks work that conflicts with stated intent or weakens security; decides promotion-safe controls. Cannot be skipped.
+  Required security, intent, and blind adversarial review gate after Kenji proof. Evaluates changes blind to author rationale to eliminate cognitive bias. Blocks work that conflicts with stated intent or weakens security; decides promotion-safe controls. Use when Adrian advances an item to Nadia after Kenji proof. Cannot be skipped.
 owner_agent: nadia
 rank: critical
 isolation: read-only
@@ -14,7 +14,7 @@ dependencies:
     - staging-prove
 contracts:
   inputs:
-    - Work item, Kenji proof (per run-spec proof_mode), optional private abuse summary
+    - Work item, Kenji proof (per run-spec proof_mode and target_commit_sha), raw code diff, optional private abuse summary
   outputs:
     - Pass, block, or pass-with-promotion-safe-control
 ---
@@ -23,7 +23,7 @@ contracts:
 
 ## When to use
 
-Kenji has passed proof for the run-spec `proof_mode` and Adrian advances to Nadia.
+Kenji has passed proof for the run-spec `proof_mode` (with valid `target_commit_sha`) and Adrian advances to Nadia.
 
 ## When not to use
 
@@ -31,13 +31,14 @@ Any path that skips Kenji, opens a PR, or publishes raw abuse steps to the promo
 
 ## Criticality
 
-Critical: cannot be skipped. The durable change is the control for abuse findings.
+Critical: cannot be skipped. Evaluates raw diffs blind to author rationale. The durable change is the control for abuse findings.
 
 ## Source of truth
 
 - Owner `ai-tooling/agents/nadia/AGENT.md`
 - [`docs/standards/finding-schema.md`](../../../../docs/standards/finding-schema.md)
-- Kenji proof artifact
+- [`docs/standards/run-spec.md`](../../../../docs/standards/run-spec.md)
+- Kenji proof artifact (`proof.json`)
 
 ## Isolation
 
@@ -45,11 +46,12 @@ Critical: cannot be skipped. The durable change is the control for abuse finding
 
 ## How to use
 
-1. Refuse if Kenji proof is missing or does not match the run-spec `proof_mode` (accept local-replay and/or declared staging; do not invent hosts).
-2. Check stated intent vs the change. Block on intent conflict or security weakening.
-3. For abuse-derived items: decide the promotion-safe control text. Do not paste attack recipes. The durable change is the control.
-4. Record pass / block / pass-with-promotion-safe-control on the work item for Simone.
-5. Return to Adrian. MUST NOT be bypassed.
+1. Refuse if Kenji proof is missing, invalid, or does not match the run-spec `proof_mode` (accept local-replay and/or declared staging; do not invent hosts).
+2. Conduct **blind adversarial review**: inspect raw diffs and test cases *without* Leo's self-justifying rationales or defensive commentary. Evaluate boundary conditions, concurrency/lease edges, privilege boundaries, and stated architectural intent objectively.
+3. Enforce **cross-model diversity**: Nadia executes on a secondary model family (e.g. Claude) distinct from Leo's primary model family (Gemini).
+4. For abuse-derived items: decide the promotion-safe control text. Do not paste attack recipes. The durable change is the control.
+5. Record pass / block / pass-with-promotion-safe-control on the work item for Simone's adjudication pass.
+6. Return findings and gate decision to Adrian. MUST NOT be bypassed.
 
 ## Dry run
 

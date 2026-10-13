@@ -2,7 +2,7 @@
 schema_version: "2.0.0"
 name: implement-finding
 description: >-
-  Implement a Julian-deconflicted work item on a branch in an isolated worktree. Use when Adrian advances Leo after Julian records work items. Do not open the pull request toward main.
+  Implement a Julian-deconflicted work item on a branch in an isolated worktree. Whoever writes code never judges it: Leo implements only and never reviews, approves, or opens PRs toward main. Appends standardized git provenance trailers. Use when Adrian advances Leo after Julian records work items.
 owner_agent: leo
 rank: high
 isolation: mutate
@@ -14,9 +14,9 @@ dependencies:
     - isolate-work
 contracts:
   inputs:
-    - Deconflicted work item, finding expected result or opportunity `success_criteria`, parent-provided worktree path
+    - Deconflicted work item, finding expected result or opportunity `success_criteria`, parent-provided worktree path, run spec
   outputs:
-    - Branch with claimed change; claimed behavior summary for Kenji
+    - Branch with claimed change; commit with git trailers; claimed behavior summary for Kenji
 ---
 
 # Implement Finding
@@ -27,17 +27,18 @@ Julian has recorded deconflicted work items and Adrian advances Leo to implement
 
 ## When not to use
 
-Opening PRs, merging, staging proof, or security gate work.
+Opening PRs, merging, staging proof, code review, or security gate work. Leo never reviews or judges his own code.
 
 ## Criticality
 
-High: only Leo and Simone write; Leo never opens the PR toward main.
+High: only Leo and Simone write; Leo never judges his own code and never opens the PR toward main.
 
 ## Source of truth
 
 - Owner `ai-tooling/agents/leo/AGENT.md`
 - `isolate-work` / parent worktree
 - Assigned ledger item
+- [`docs/standards/run-spec.md`](../../../../docs/standards/run-spec.md)
 
 ## Isolation
 
@@ -46,9 +47,14 @@ High: only Leo and Simone write; Leo never opens the PR toward main.
 ## How to use
 
 1. Confirm the Julian work item and worktree path from parent. Refuse without a recorded work item. Refuse to edit the primary checkout.
-2. Implement the assigned change on the feature branch. Conventional Commits if committing.
-3. Summarize claimed behavior for Kenji. Do **not** open a PR toward main.
-4. Return branch name, worktree path, and claim summary to Adrian.
+2. Implement the assigned change on the feature branch. Use Conventional Commits and append standardized git provenance trailers:
+   ```gitcommit
+   Co-Authored-By: Agent Factory <agent-factory@local>
+   X-Factory-Run: <run_id>
+   X-Factory-Ledger-ID: <finding_id>
+   ```
+3. Summarize claimed behavior and record the branch tip commit SHA for Kenji. Do **not** review, approve, or open a PR toward main.
+4. Return branch name, worktree path, branch commit SHA, and claim summary to Adrian.
 
 ## Dry run
 

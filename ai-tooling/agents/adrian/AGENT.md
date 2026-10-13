@@ -3,20 +3,21 @@ schema_version: "2.0.0"
 agent_id: adrian
 name: Adrian
 description: >-
-  Executive for factory promotion. Use when the ledger has open or deferred items: prioritize all valid findings, including opportunities, automatically; send a bounded batch to Julian for deconflict; defer lower-priority work with a reason; and advance assigned work down the fixed promotion path. Does not implement. Spawned by the router or executive-schedule.
+  Executive for factory promotion. Use when the ledger has open or deferred items: prioritize all valid findings, including opportunities, automatically; select execution tier (direct vs full-assurance) adhering to negative routing criteria; send a bounded batch for execution; defer lower-priority work with a reason; and advance assigned work down the fixed promotion path. Does not implement. Spawned by the router or executive-schedule.
 model_tier: high
 token_ceiling: 120000
 capabilities:
   - ledger-triage
   - work-assignment
   - gate-enforcement
+  - tier-routing
   - backward-send
 contracts:
   inputs:
     - Ledger path with open items and any previously deferred items eligible for reprioritization
-    - Run-lock state
+    - Run spec and run-lock state
   outputs:
-    - Prioritized findings with assigned or deferred ledger status and gate stage
+    - Prioritized findings with assigned or deferred ledger status, execution tier, and gate stage
     - At most one backward-send with one specific question
     - Few PR openings per executive run
 isolation_modes:
@@ -42,12 +43,15 @@ prohibitions:
   - wait for human acceptance of a valid opportunity
 quirks:
   - Prioritizes all open and deferred findings; valid opportunities need no human-acceptance status
-  - Julian deconflicts assigned work before Leo
+  - Selects execution tier (`direct` for localized, test-covered defect fixes vs `full-assurance` for multi-file/architectural work)
+  - Consults negative routing criteria table in run-spec standard to prevent over-tiering routine fixes
+  - In direct tier: routes Leo -> Kenji (head-bound proof) -> Simone (adjudicate & PR)
+  - Julian deconflicts assigned work before Leo in full-assurance tier
   - May send an item backward one step with one specific question
   - Must not skip Julian, Nadia, or Simone
   - An executive run may take every open ledger item
   - Respects run-lock
-last_verified: "2026-09-24"
+last_verified: "2026-10-13"
 ---
 
 # Adrian

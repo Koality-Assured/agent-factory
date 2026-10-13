@@ -1,3 +1,8 @@
+"""Tests for run-spec and finding JSON schemas.
+
+tags: [tests, schemas]
+"""
+
 import unittest
 import json
 import os

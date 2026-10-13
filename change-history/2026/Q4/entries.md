@@ -7,6 +7,18 @@ Entries newest first. Append via `python scripts/change-history/append_change_hi
 
 
 
+
+### 2026-10-13 — Integrate Anneal verification patterns into Agent Factory
+
+- **Requesting user:** Distasteful
+- **AI agent:** router
+- **User request:** Add Anneal adaptations to Agent Factory engine, skills, and agents
+- **Summary:**
+  - Codified blind adversarial review by Nadia and explicit finding adjudication by Simone
+  - Introduced head-bound cryptographic regression proofs tied to commit SHA and server-side ancestry checks
+  - Added direct vs full-assurance execution tiers with negative routing guardrails in run-spec schema
+  - Enforced standardized git provenance trailers and cross-model diversity between author and reviewer
+
 ### 2026-10-10 — docs: generalize QA packs for varied targets
 
 - **Requesting user:** repository maintainer
