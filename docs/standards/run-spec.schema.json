@@ -8,6 +8,8 @@
     "pack_id": { "type": "string" },
     "pack_path": { "type": "string" },
     "mode": { "type": "string" },
+    "tier": { "type": "string", "enum": ["direct", "full-assurance"] },
+    "git_trailers": { "type": "boolean" },
     "promotion_target": { "type": "string" },
     "proof_mode": { "type": "string" },
     "staging_host": { "type": "string" },

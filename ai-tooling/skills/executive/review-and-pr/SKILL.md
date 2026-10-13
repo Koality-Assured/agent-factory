@@ -2,7 +2,7 @@
 schema_version: "2.0.0"
 name: review-and-pr
 description: >-
-  Review Leo's work after Nadia passes and open the pull request toward main. Use when Adrian advances an item to Simone. Only agent who may open that PR. Julian validates next; a human merges. Do not merge.
+  Adjudicate review findings (accept/reject/defer), apply accepted fixes, verify Kenji's commit SHA proof validity, and open the pull request toward main with standardized git provenance trailers. Use when Adrian advances an item to Simone after Nadia passes. Only agent who may open that PR. Julian validates next; a human merges. Do not merge.
 owner_agent: simone
 rank: high
 isolation: mutate
@@ -14,20 +14,20 @@ dependencies:
     - security-intent-gate
 contracts:
   inputs:
-    - Work item, Leo branch, Kenji proof, Nadia pass
+    - Work item, Leo branch, Kenji proof artifact (with target_commit_sha), Nadia pass
   outputs:
-    - Review result; PR URL on pass; never a merge
+    - Adjudication log, review result, and PR URL on pass; never a merge
 ---
 
 # Review And Pr
 
 ## When to use
 
-Nadia has passed and Adrian assigns Simone to review and open the PR.
+Nadia has passed and Adrian assigns Simone to adjudicate findings, review, and open the PR.
 
 ## When not to use
 
-Merging to main, skipping Nadia, validating mergeability (Julian), or opening a PR without Kenji+Nadia clearance.
+Merging to main, skipping Nadia, validating mergeability (Julian), or opening a PR without valid Kenji+Nadia clearance and matching commit SHA proof.
 
 ## Criticality
 
@@ -36,8 +36,9 @@ High: Simone is the only agent who may open the PR toward main. Julian then vali
 ## Source of truth
 
 - Owner `ai-tooling/agents/simone/AGENT.md`
+- [`docs/standards/run-spec.md`](../../../../docs/standards/run-spec.md)
 - `github-workflow` patterns via qmd
-- Gate artifacts
+- Gate artifacts (Kenji proof.json, Nadia pass)
 
 ## Isolation
 
@@ -45,10 +46,19 @@ High: Simone is the only agent who may open the PR toward main. Julian then vali
 
 ## How to use
 
-1. Refuse without Kenji proof and Nadia pass on the work item.
-2. Review Leo's branch. Request changes via Adrian backward-send if needed (do not skip gates).
-3. On pass: open the pull request toward `main` with Conventional Commits title. Simone is the **only** agent who may open this PR.
-4. Do **not** merge. Hand the PR to Julian (`validate-merge`) for completeness and mergeability. A human merges after Julian passes.
+1. Refuse without Kenji proof and Nadia pass on the work item. Verify Kenji's `target_commit_sha` matches the branch tip commit SHA.
+2. Adjudicate all findings from Nadia and code review in an explicit adjudication log:
+   - **`accepted`**: Apply fix to the branch. *Applying fixes amends the commit tree and changes the branch tip SHA, which immediately invalidates Kenji's proof and mandates re-running Kenji's proof before opening the PR.*
+   - **`rejected`**: Document technical rationale explaining why the finding does not apply.
+   - **`deferred`**: Bounded as non-blocking technical debt for a subsequent run.
+3. On pass and with verified matching `target_commit_sha` proof: open the pull request toward `main` with Conventional Commits title and standardized git provenance trailers:
+   ```gitcommit
+   Co-Authored-By: Agent Factory <agent-factory@local>
+   X-Factory-Run: <run_id>
+   X-Factory-Ledger-ID: <finding_id>
+   ```
+   Simone is the **only** agent who may open this PR.
+4. Do **not** merge. Hand the PR to Julian (`validate-merge`) for completeness, mergeability, and git ancestry checks. A human merges after Julian passes.
 5. Return PR URL or block reason to Adrian. An executive run may open one pull request per deconflicted work item.
 
 ## Dry run

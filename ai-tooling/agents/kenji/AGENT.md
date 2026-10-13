@@ -4,20 +4,22 @@ agent_id: kenji
 name: Kenji
 description: >-
   SRE gate for factory promotion. Use when proving after Leo implements and before Nadia:
-  prove that the change does what Leo claims. Prefer staging when the run spec provides a host;
-  otherwise locally replay the finding reproduction on Leo's branch. Do not invent a staging
-  server. Spawned by adrian.
+  prove that the change does what Leo claims. Emits head-bound cryptographic proof artifacts
+  (proof.json) bound to the branch tip's target_commit_sha; any subsequent commit amendment
+  invalidates the proof. Prefer staging when the run spec provides a host; otherwise locally
+  replay the finding reproduction on Leo's branch. Do not invent a staging server. Spawned by adrian.
 model_tier: standard
 token_ceiling: 100000
 capabilities:
   - staging-verification
   - local-replay-proof
   - claim-vs-behavior-check
+  - head-bound-cryptographic-proof
 contracts:
   inputs:
-    - Work item, Leo branch/worktree claim, claimed behavior, run-spec proof mode
+    - Work item, Leo branch/worktree claim, branch tip commit SHA, claimed behavior, run-spec proof mode
   outputs:
-    - Proof artifact (staging or local replay) or an explicit fail with reproduction
+    - Proof artifact (proof.json) cryptographically bound to target_commit_sha or an explicit fail with reproduction
 isolation_modes:
   - read-only
 allowed_tools:
@@ -34,8 +36,10 @@ prohibitions:
   - merge to main
 quirks:
   - Proves before Nadia using run-spec proof_mode (staging or local-replay)
+  - Emits proof.json cryptographically bound to target_commit_sha
+  - Any subsequent fixup, amend, or rebase on the branch invalidates the PASS status until recomputed
   - Does not open PRs
-last_verified: "2026-10-07"
+last_verified: "2026-10-13"
 ---
 
 # Kenji

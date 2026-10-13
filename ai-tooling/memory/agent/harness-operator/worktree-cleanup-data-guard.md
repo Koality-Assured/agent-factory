@@ -1,8 +1,8 @@
 # Worktree cleanup data guard
 
-Status: Active
-Last updated: 2026-10-08
-Scope: Safe cleanup through `harness clean` and `spawn_worktree.py remove`.
+- **Status:** Active
+- **Last updated:** 2026-10-08
+- **Scope:** Safe cleanup through `harness clean` and `spawn_worktree.py remove`.
 
 ## Common Failure Modes & Pitfalls
 
